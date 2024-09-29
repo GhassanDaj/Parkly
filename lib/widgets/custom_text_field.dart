@@ -10,23 +10,35 @@ class CustomTextField extends StatelessWidget {
   final IconData? icon;
 
   const CustomTextField({
-    super.key,
+    Key? key,
     required this.label,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
     required this.onChanged,
     this.validator,
     this.icon,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: icon != null ? Icon(icon, color: Colors.white) : null,
+        labelStyle: TextStyle(color: Colors.white70),
+        prefixIcon: icon != null ? Icon(icon, color: Colors.white70) : null,
+        filled: true,
+        fillColor:
+            Colors.white.withOpacity(0.1), // Semi-transparent dark background
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide(color: Colors.white70),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide(color: Colors.white),
+        ),
       ),
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: Colors.white), // Set text color to white
       obscureText: isPassword,
       keyboardType: keyboardType,
       validator: validator,

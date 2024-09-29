@@ -13,8 +13,6 @@ void main() async {
 }
 
 class ParklyApp extends StatelessWidget {
-  const ParklyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<AuthProvider>(
@@ -23,19 +21,17 @@ class ParklyApp extends StatelessWidget {
         title: 'Parkly',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: const Color(0xFF0A9396),
-          hintColor: const Color(0xFF94D2BD),
+          primaryColor: Color(0xFF0A9396),
+          hintColor: Color(0xFF94D2BD),
           scaffoldBackgroundColor: Colors.white,
           textTheme: GoogleFonts.poppinsTextTheme(
-            Theme.of(context)
-                .textTheme
-                .apply(bodyColor: const Color(0xFF001219)),
+            Theme.of(context).textTheme.apply(bodyColor: Color(0xFF001219)),
           ),
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
             fillColor: Colors.grey[100],
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
               borderSide: BorderSide.none,
@@ -44,9 +40,8 @@ class ParklyApp extends StatelessWidget {
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
-              backgroundColor: const Color(0xFF0A9396),
-              textStyle:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              backgroundColor: Color(0xFF0A9396),
+              textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0),
               ),
