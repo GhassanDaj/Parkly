@@ -21,15 +21,14 @@ class ParklyApp extends StatelessWidget {
         title: 'Parkly',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: Color(0xFF0A9396),
-          hintColor: Color(0xFF94D2BD),
+          primaryColor: Color(0xFF6C63FF),
           scaffoldBackgroundColor: Colors.white,
-          textTheme: GoogleFonts.poppinsTextTheme(
-            Theme.of(context).textTheme.apply(bodyColor: Color(0xFF001219)),
+          textTheme: GoogleFonts.latoTextTheme(
+            Theme.of(context).textTheme,
           ),
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
-            fillColor: Colors.grey[100],
+            fillColor: Color(0xFFF0F0F0),
             contentPadding:
                 EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
             border: OutlineInputBorder(
@@ -40,7 +39,7 @@ class ParklyApp extends StatelessWidget {
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
-              backgroundColor: Color(0xFF0A9396),
+              backgroundColor: Color(0xFF6C63FF),
               textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0),

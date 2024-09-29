@@ -1,7 +1,7 @@
 // widgets/custom_text_field.dart
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String label;
   final bool isPassword;
   final TextInputType keyboardType;
@@ -20,29 +20,39 @@ class CustomTextField extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _CustomTextFieldState createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  bool _obscureText = true;
+
+  @override
+  void initState() {
+    _obscureText = widget.isPassword;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(color: Colors.white70),
-        prefixIcon: icon != null ? Icon(icon, color: Colors.white70) : null,
-        filled: true,
-        fillColor:
-            Colors.white.withOpacity(0.1), // Semi-transparent dark background
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.white70),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.white),
-        ),
+        labelText: widget.label,
+        prefixIcon: widget.icon != null ? Icon(widget.icon) : null,
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility_off : Icons.visibility,
+                ),
+                onPressed: () => setState(() {
+                  _obscureText = !_obscureText;
+                }),
+              )
+            : null,
       ),
-      style: TextStyle(color: Colors.white), // Set text color to white
-      obscureText: isPassword,
-      keyboardType: keyboardType,
-      validator: validator,
-      onChanged: onChanged,
+      obscureText: _obscureText,
+      keyboardType: widget.keyboardType,
+      validator: widget.validator,
+      onChanged: widget.onChanged,
     );
   }
 }
