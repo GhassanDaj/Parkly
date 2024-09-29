@@ -36,6 +36,16 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  // Reset Password
+  Future<String?> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      return e.message;
+    }
+  }
+
   // Sign Out
   Future<void> signOut() async {
     await _auth.signOut();
