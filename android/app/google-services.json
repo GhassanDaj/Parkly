@@ -12,7 +12,20 @@
           "package_name": "com.example.parkly"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "617337189541-no346rp98uqd9fiesuktikg2fm56pepr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.app",
+            "certificate_hash": "4b1f9890bbdde0b665c96dffef4f1d36199855ed"
+          }
+        },
+        {
+          "client_id": "617337189541-ka01hqm21odkbkd8585nt31846d1v0i3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDxn4_QIvYH4FKzymmB6nFGL3bt9Zw4Lvo"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617337189541-ka01hqm21odkbkd8585nt31846d1v0i3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "617337189541-ln8jemq2f6urokibvvsaekt50282gb34.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.parkly"
+              }
+            }
+          ]
         }
       }
     }
