@@ -10,14 +10,15 @@ class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  SignUpPageState createState() => SignUpPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
   String confirmPassword = '';
+  String role = 'customer'; // Default role
   String errorMessage = '';
   bool isLoading = false;
 
@@ -26,78 +27,109 @@ class SignUpPageState extends State<SignUpPage> {
     final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 60.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 60.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Illustration
             Center(
               child: Image.asset(
                 'assets/images/signup_illustration.png',
                 height: 250,
               ),
             ),
-            SizedBox(height: 30),
-            // Welcome Text
-            Text(
-              'Create Account',
+            const SizedBox(height: 30),
+            const Text(
+              'Create an Account',
               style: TextStyle(
                 fontSize: 28.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               'Sign up to get started',
               style: TextStyle(fontSize: 16, color: Colors.black54),
             ),
-            SizedBox(height: 30),
-            // Form
+            const SizedBox(height: 30),
             Form(
               key: _formKey,
               child: Column(
                 children: [
-                  // Email Field
                   CustomTextField(
                     label: 'Email',
-                    icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
-                    onChanged: (value) => email = value,
-                    validator: (value) =>
-                        value != null && value.isEmpty ? 'Enter email' : null,
+                    onChanged: (value) {
+                      setState(() {
+                        email = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      return null;
+                    },
                   ),
-                  SizedBox(height: 20),
-                  // Password Field
+                  const SizedBox(height: 20),
                   CustomTextField(
                     label: 'Password',
-                    icon: Icons.lock_outline,
                     isPassword: true,
-                    onChanged: (value) => password = value,
-                    validator: (value) => value != null && value.length < 6
-                        ? 'Password must be at least 6 characters'
-                        : null,
+                    onChanged: (value) {
+                      setState(() {
+                        password = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      if (value.length < 6) {
+                        return 'Password must be at least 6 characters long';
+                      }
+                      return null;
+                    },
                   ),
-                  SizedBox(height: 20),
-                  // Confirm Password Field
+                  const SizedBox(height: 20),
                   CustomTextField(
                     label: 'Confirm Password',
-                    icon: Icons.lock_outline,
                     isPassword: true,
-                    onChanged: (value) => confirmPassword = value,
-                    validator: (value) => value != null && value != password
-                        ? 'Passwords do not match'
-                        : null,
+                    onChanged: (value) {
+                      setState(() {
+                        confirmPassword = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please confirm your password';
+                      }
+                      if (value != password) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
                   ),
-                  SizedBox(height: 20),
-                  // Error Message
+                  const SizedBox(height: 20),
+                  DropdownButtonFormField<String>(
+                    value: role,
+                    decoration: const InputDecoration(labelText: 'Role'),
+                    items: [
+                      DropdownMenuItem(value: 'customer', child: Text('Customer')),
+                      DropdownMenuItem(value: 'renter', child: Text('Renter')),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        role = value!;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
                   if (errorMessage.isNotEmpty)
                     Text(
                       errorMessage,
-                      style: TextStyle(color: Colors.redAccent),
+                      style: const TextStyle(color: Colors.red),
                     ),
-                  SizedBox(height: 20),
-                  // Sign Up Button
+                  const SizedBox(height: 20),
                   CustomButton(
                     text: 'Sign Up',
                     isLoading: isLoading,
@@ -107,8 +139,14 @@ class SignUpPageState extends State<SignUpPage> {
                           isLoading = true;
                           errorMessage = '';
                         });
-                        String? result =
-                            await authProvider.signUp(email.trim(), password);
+                        if (password != confirmPassword) {
+                          setState(() {
+                            errorMessage = 'Passwords do not match';
+                            isLoading = false;
+                          });
+                          return;
+                        }
+                        String? result = await authProvider.signUp(email.trim(), password, role);
                         if (result != null) {
                           setState(() {
                             errorMessage = result;
@@ -118,22 +156,21 @@ class SignUpPageState extends State<SignUpPage> {
                           setState(() {
                             isLoading = false;
                           });
-                          // Navigate to home or login page after successful sign-up
+                          // Navigate to login page after successful sign-up
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()),
+                            MaterialPageRoute(builder: (context) => const LoginPage()),
                           );
                         }
                       }
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   // Navigate to Login
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'Already have an account?',
                         style: TextStyle(color: Colors.black54),
                       ),
@@ -143,9 +180,7 @@ class SignUpPageState extends State<SignUpPage> {
                         },
                         child: Text(
                           'Login',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
+                          style: TextStyle(color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ],

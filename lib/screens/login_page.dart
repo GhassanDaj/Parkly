@@ -6,7 +6,6 @@ import 'package:parkly/services/auth_provider.dart';
 import 'package:parkly/widgets/custom_button.dart';
 import 'package:parkly/widgets/custom_text_field.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -27,20 +26,18 @@ class LoginPageState extends State<LoginPage> {
     final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 60.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 60.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Illustration
             Center(
               child: Image.asset(
                 'assets/images/login_illustration.png',
                 height: 250,
               ),
             ),
-            SizedBox(height: 30),
-            // Welcome Text
-            Text(
+            const SizedBox(height: 30),
+            const Text(
               'Welcome Back!',
               style: TextStyle(
                 fontSize: 28.0,
@@ -48,65 +45,55 @@ class LoginPageState extends State<LoginPage> {
                 color: Colors.black87,
               ),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               'Login to your account',
               style: TextStyle(fontSize: 16, color: Colors.black54),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             // Form
             Form(
               key: _formKey,
               child: Column(
                 children: [
-                  // Email Field
                   CustomTextField(
                     label: 'Email',
-                    icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
-                    onChanged: (value) => email = value,
-                    validator: (value) =>
-                        value != null && value.isEmpty ? 'Enter email' : null,
+                    onChanged: (value) {
+                      setState(() {
+                        email = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      return null;
+                    },
                   ),
-                  SizedBox(height: 20),
-                  // Password Field
+                  const SizedBox(height: 20),
                   CustomTextField(
                     label: 'Password',
-                    icon: Icons.lock_outline,
                     isPassword: true,
-                    onChanged: (value) => password = value,
-                    validator: (value) => value != null && value.length < 6
-                        ? 'Password must be at least 6 characters'
-                        : null,
+                    onChanged: (value) {
+                      setState(() {
+                        password = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password';
+                      }
+                      return null;
+                    },
                   ),
-                  SizedBox(height: 10),
-                  // Forgot Password Link
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        // Navigate to Password Reset Page
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PasswordResetPage()),
-                        );
-                      },
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(color: Theme.of(context).primaryColor),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  // Error Message
+                  const SizedBox(height: 20),
                   if (errorMessage.isNotEmpty)
                     Text(
                       errorMessage,
-                      style: TextStyle(color: Colors.redAccent),
+                      style: const TextStyle(color: Colors.red),
                     ),
-                  SizedBox(height: 20),
-                  // Login Button
+                  const SizedBox(height: 20),
                   CustomButton(
                     text: 'Login',
                     isLoading: isLoading,
@@ -116,8 +103,7 @@ class LoginPageState extends State<LoginPage> {
                           isLoading = true;
                           errorMessage = '';
                         });
-                        String? result =
-                            await authProvider.signIn(email.trim(), password);
+                        String? result = await authProvider.signIn(email.trim(), password, 'customer');
                         if (result != null) {
                           setState(() {
                             errorMessage = result;
@@ -127,61 +113,34 @@ class LoginPageState extends State<LoginPage> {
                           setState(() {
                             isLoading = false;
                           });
+                          // Navigate to home page after login
+                          // Replace with your navigation logic
+                          Navigator.pushReplacementNamed(context, '/home');
                         }
                       }
                     },
                   ),
-                  SizedBox(height: 20),
-                  // Or Divider
-                  Row(
-                    children: [
-                      Expanded(child: Divider(color: Colors.grey)),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          'OR',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                      Expanded(child: Divider(color: Colors.grey)),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  // Google Sign-In Button
-                  SignInButton(
-                    Buttons.Google,
-                    onPressed: () async {
-                      setState(() {
-                        isLoading = true;
-                        errorMessage = '';
-                      });
-                      try {
-                        String? result = await authProvider.signInWithGoogle();
-                        if (result != null) {
-                          setState(() {
-                            errorMessage = result;
-                            isLoading = false;
-                          });
-                        } else {
-                          setState(() {
-                            isLoading = false;
-                          });
-                        }
-                      } catch (e) {
-                        setState(() {
-                          errorMessage =
-                              'An error occurred during Google Sign-In.';
-                          isLoading = false;
-                        });
-                      }
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  // Navigate to Sign Up
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const PasswordResetPage()),
+                          );
+                        },
+                        child: const Text('Forgot Password?'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  // Sign Up Navigation
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
                         'Don\'t have an account?',
                         style: TextStyle(color: Colors.black54),
                       ),
@@ -189,15 +148,12 @@ class LoginPageState extends State<LoginPage> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => SignUpPage()),
+                            MaterialPageRoute(builder: (context) => const SignUpPage()),
                           );
                         },
                         child: Text(
                           'Sign Up',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                          ),
+                          style: TextStyle(color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ],
