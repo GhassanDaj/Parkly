@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:parkly/services/auth_provider.dart';
+import 'package:parkly/services/booking_provider.dart';
 import 'package:parkly/screens/auth_wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,8 +16,12 @@ void main() async {
 class ParklyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<AuthProvider>(
-      create: (_) => AuthProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        ChangeNotifierProvider<BookingProvider>(
+            create: (_) => BookingProvider()),
+      ],
       child: MaterialApp(
         title: 'Parkly',
         debugShowCheckedModeBanner: false,
