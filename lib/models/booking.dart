@@ -1,5 +1,6 @@
-// models/booking.dart
+// lib/models/booking.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:parkly/models/parking_spot.dart';
 
 class Booking {
   final String id;
@@ -8,6 +9,7 @@ class Booking {
   final DateTime startTime;
   final DateTime endTime;
   final double totalPrice;
+  final ParkingSpot parkingSpot; // Reference to the ParkingSpot
 
   Booking({
     required this.id,
@@ -16,16 +18,19 @@ class Booking {
     required this.startTime,
     required this.endTime,
     required this.totalPrice,
+    required this.parkingSpot,
   });
 
-  factory Booking.fromMap(Map<String, dynamic> data, String documentId) {
+  factory Booking.fromMap(
+      Map<String, dynamic> data, String documentId, ParkingSpot spot) {
     return Booking(
       id: documentId,
       userId: data['userId'] ?? '',
       parkingSpotId: data['parkingSpotId'] ?? '',
       startTime: (data['startTime'] as Timestamp).toDate(),
       endTime: (data['endTime'] as Timestamp).toDate(),
-      totalPrice: data['totalPrice']?.toDouble() ?? 0.0,
+      totalPrice: (data['totalPrice'] as num?)?.toDouble() ?? 0.0,
+      parkingSpot: spot,
     );
   }
 
@@ -33,8 +38,8 @@ class Booking {
     return {
       'userId': userId,
       'parkingSpotId': parkingSpotId,
-      'startTime': startTime,
-      'endTime': endTime,
+      'startTime': Timestamp.fromDate(startTime),
+      'endTime': Timestamp.fromDate(endTime),
       'totalPrice': totalPrice,
     };
   }

@@ -1,15 +1,20 @@
-// main.dart
+// lib/main.dart
+
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:parkly/screens/home_page.dart';
 import 'package:parkly/services/auth_provider.dart';
 import 'package:parkly/services/booking_provider.dart';
-import 'package:parkly/screens/auth_wrapper.dart';
+import 'package:parkly/services/parking_spot_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // Ensure this is correctly set up
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options:
+        DefaultFirebaseOptions.currentPlatform, // Ensure correct initialization
+  );
   runApp(ParklyApp());
 }
 
@@ -18,41 +23,25 @@ class ParklyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider()),
+        ChangeNotifierProvider<AuthProvider>(
+          create: (_) => AuthProvider(),
+        ),
         ChangeNotifierProvider<BookingProvider>(
-            create: (_) => BookingProvider()),
+          create: (_) => BookingProvider(),
+        ),
+        ChangeNotifierProvider<ParkingSpotProvider>(
+          create: (_) => ParkingSpotProvider()
+            ..fetchParkingSpots(), // Fetch spots on initialization
+        ),
+        // Add other providers here
       ],
       child: MaterialApp(
         title: 'Parkly',
-        debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: Color(0xFF6C63FF),
-          scaffoldBackgroundColor: Colors.white,
-          textTheme: GoogleFonts.latoTextTheme(
-            Theme.of(context).textTheme,
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            filled: true,
-            fillColor: Color(0xFFF0F0F0),
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide.none,
-            ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Color(0xFF6C63FF),
-              textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-            ),
-          ),
+          primarySwatch: Colors.blue,
         ),
-        home: AuthWrapper(),
+        home: HomePage(),
+        // Define routes if necessary
       ),
     );
   }

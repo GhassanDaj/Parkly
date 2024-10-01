@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(); // Instantiate GoogleSignIn
   User? user;
 
   AuthProvider() {
@@ -48,14 +49,28 @@ class AuthProvider with ChangeNotifier {
 
   // Sign Out
   Future<void> signOut() async {
-    await _auth.signOut();
+    try {
+      // Sign out from Firebase Auth
+      await _auth.signOut();
+
+      // Sign out from Google Sign-In if currently signed in
+      if (await _googleSignIn.isSignedIn()) {
+        await _googleSignIn.signOut();
+      }
+
+      // Optionally, disconnect Google Sign-In
+      // await _googleSignIn.disconnect();
+    } catch (e) {
+      print('Error signing out: $e');
+      // Optionally, handle the error, e.g., by notifying the user
+    }
   }
 
   // Sign In with Google
   Future<String?> signInWithGoogle() async {
     try {
       // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
         // The user canceled the sign-in

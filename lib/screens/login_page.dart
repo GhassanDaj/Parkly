@@ -1,4 +1,5 @@
-// screens/login_page.dart
+// lib/screens/login_page.dart
+
 import 'package:flutter/material.dart';
 import 'package:parkly/screens/sign_up_page.dart';
 import 'package:parkly/screens/password_reset_page.dart';
@@ -7,6 +8,7 @@ import 'package:parkly/widgets/custom_button.dart';
 import 'package:parkly/widgets/custom_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:parkly/screens/home_page.dart'; // Ensure this route is correct
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -127,6 +129,10 @@ class LoginPageState extends State<LoginPage> {
                           setState(() {
                             isLoading = false;
                           });
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                            (Route<dynamic> route) => false,
+                          );
                         }
                       }
                     },
@@ -166,6 +172,10 @@ class LoginPageState extends State<LoginPage> {
                           setState(() {
                             isLoading = false;
                           });
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                            (Route<dynamic> route) => false,
+                          );
                         }
                       } catch (e) {
                         setState(() {
