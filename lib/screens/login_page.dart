@@ -1,12 +1,12 @@
 // screens/login_page.dart
 import 'package:flutter/material.dart';
 import 'package:parkly/screens/sign_up_page.dart';
+import 'package:parkly/screens/password_reset_page.dart';
 import 'package:parkly/services/auth_provider.dart';
 import 'package:parkly/widgets/custom_button.dart';
 import 'package:parkly/widgets/custom_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -79,7 +79,26 @@ class LoginPageState extends State<LoginPage> {
                         ? 'Password must be at least 6 characters'
                         : null,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
+                  // Forgot Password Link
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        // Navigate to Password Reset Page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PasswordResetPage()),
+                        );
+                      },
+                      child: Text(
+                        'Forgot Password?',
+                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
                   // Error Message
                   if (errorMessage.isNotEmpty)
                     Text(
