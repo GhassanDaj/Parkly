@@ -11,24 +11,28 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^2.5.0
-  firebase_auth: ^4.4.0
-  cloud_firestore: ^4.5.0
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.3
   provider: ^6.0.0
-  google_fonts: ^5.0.0
+  google_fonts: ^6.2.1
   flutter_signin_button: ^2.0.0
   font_awesome_flutter: 9.2.0
-  google_sign_in: ^5.4.0
+  google_sign_in: ^6.2.1
   google_maps_flutter: ^2.2.0 # If using Google Maps
   intl: ^0.19.0
+  flutter_spinkit: ^5.1.0 # For enhanced loading indicators (optional)
+  cached_network_image: ^3.2.3 # For efficient image loading (optional)
+  location: ^6.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
   assets:
     - assets/images/login_illustration.png
     - assets/images/signup_illustration.png
+    - assets/images/parking_marker.png # Add this line
