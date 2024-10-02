@@ -40,6 +40,7 @@ class ParklyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
+        debugShowCheckedModeBanner: false,
         home: HomePage(),
         // Define routes if necessary
       ),
