@@ -3,9 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:parkly/models/parking_spot.dart';
-import 'package:parkly/screens/parking_spot_details_screen.dart';
-import 'package:parkly/services/location_service.dart'; // If using user location
-import 'package:location/location.dart'; // If using user location
+import 'package:parkly/widgets/booking_details_bottom_sheet.dart';
 
 class ParkingSpotsMap extends StatefulWidget {
   final List<ParkingSpot> parkingSpots;
@@ -20,15 +18,27 @@ class ParkingSpotsMap extends StatefulWidget {
 class _ParkingSpotsMapState extends State<ParkingSpotsMap> {
   late GoogleMapController mapController;
   final Set<Marker> _markers = {};
-  LocationService _locationService = LocationService();
-  LatLng _initialPosition =
-      LatLng(40.758896, -73.985130); // Default to Times Square, NY
+  BitmapDescriptor? availableIcon;
+  BitmapDescriptor? bookedIcon;
 
   @override
   void initState() {
     super.initState();
+    _loadMarkerIcons();
     _setMarkers();
     _determinePosition();
+  }
+
+  Future<void> _loadMarkerIcons() async {
+    availableIcon = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(48, 48)),
+      'assets/icons/available_marker.png', // Ensure this asset exists
+    );
+    bookedIcon = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(48, 48)),
+      'assets/icons/booked_marker.png', // Ensure this asset exists
+    );
+    setState(() {}); // Refresh to apply custom icons
   }
 
   void _setMarkers() {
@@ -38,18 +48,17 @@ class _ParkingSpotsMapState extends State<ParkingSpotsMap> {
         position: LatLng(spot.latitude, spot.longitude),
         infoWindow: InfoWindow(
           title: spot.name,
-          snippet: spot.address,
+          snippet: '\$${spot.pricePerHour}/hr',
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ParkingSpotDetailsScreen(parkingSpot: spot),
-              ),
-            );
+            _showBookingDetailsBottomSheet(spot);
           },
         ),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
+        icon: spot.isAvailable
+            ? (availableIcon ??
+                BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueAzure))
+            : (bookedIcon ??
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed)),
       );
     }).toSet();
 
@@ -60,18 +69,20 @@ class _ParkingSpotsMapState extends State<ParkingSpotsMap> {
   }
 
   Future<void> _determinePosition() async {
-    var locationData = await _locationService.getLocation();
-    if (locationData != null) {
-      setState(() {
-        _initialPosition =
-            LatLng(locationData.latitude!, locationData.longitude!);
-      });
-      mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: _initialPosition, zoom: 14.0),
-        ),
-      );
-    }
+    // Implement your location determination logic here
+  }
+
+  void _showBookingDetailsBottomSheet(ParkingSpot spot) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return BookingDetailsBottomSheet(parkingSpot: spot);
+      },
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+      isScrollControlled: true,
+    );
   }
 
   @override
@@ -82,7 +93,7 @@ class _ParkingSpotsMapState extends State<ParkingSpotsMap> {
         // Optionally, set a map style here
       },
       initialCameraPosition: CameraPosition(
-        target: _initialPosition,
+        target: LatLng(40.758896, -73.985130),
         zoom: 14.0,
       ),
       markers: _markers,
