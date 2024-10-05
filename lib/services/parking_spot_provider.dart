@@ -17,6 +17,14 @@ class ParkingSpotProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
+  Stream<List<ParkingSpot>> get parkingSpotsStream {
+    return _db.collection('parking_spots').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return ParkingSpot.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+    });
+  }
+
   /// **Fetches all available parking spots from Firestore**
   Future<void> fetchParkingSpots() async {
     _isLoading = true;
@@ -37,6 +45,16 @@ class ParkingSpotProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  /// **Listens to real-time updates of parking spots**
+  void listenToParkingSpots() {
+    _db.collection('parking_spots').snapshots().listen((snapshot) {
+      _parkingSpots = snapshot.docs.map((doc) {
+        return ParkingSpot.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+      notifyListeners();
+    });
   }
 
   /// **Updates the availability status of a parking spot**
