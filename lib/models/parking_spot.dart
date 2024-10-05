@@ -10,7 +10,7 @@ class ParkingSpot {
   final double longitude;
   final double pricePerHour;
   final bool isAvailable;
-  final String? imageUrl; // Optional: Image URL for the parking spot
+  final String? imageUrl; // Optional
 
   ParkingSpot({
     required this.id,
@@ -33,7 +33,7 @@ class ParkingSpot {
       longitude: (data['longitude'] as num?)?.toDouble() ?? 0.0,
       pricePerHour: (data['pricePerHour'] as num?)?.toDouble() ?? 0.0,
       isAvailable: data['isAvailable'] ?? true,
-      imageUrl: data['imageUrl'], // This can be null
+      imageUrl: data['imageUrl'], // Can be null
     );
   }
 
