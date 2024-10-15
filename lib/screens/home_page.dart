@@ -1,67 +1,70 @@
-// lib/screens/home_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:parkly/services/auth_provider.dart';
-import 'package:parkly/services/parking_spot_provider.dart';
 import 'package:parkly/widgets/parking_spots_map.dart';
-import 'package:parkly/screens/login_page.dart'; // Ensure you have a LoginPage
+import 'package:parkly/screens/profile_screen.dart'; // ProfileScreen includes the Logout button
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final parkingSpotProvider = Provider.of<ParkingSpotProvider>(context);
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  _HomePageState createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  static const List<Widget> _widgetOptions = <Widget>[
+    ParkingSpotsMap(), // Removed the parkingSpots parameter, the data will be fetched internally in ParkingSpotsMap
+    Text('Wishlists', style: TextStyle(fontSize: 24)), // Wishlists
+    Text('Booked', style: TextStyle(fontSize: 24)), // Booked
+    Text('Chat', style: TextStyle(fontSize: 24)), // Chat
+    ProfileScreen(), // Profile with Logout button
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Parkly'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              child: Text('Parkly',
-                  style: TextStyle(color: Colors.white, fontSize: 24)),
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-            ),
-            ListTile(
-              leading: Icon(Icons.history),
-              title: Text('Your Bookings'),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                // Navigate to Booking History Screen
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: () async {
-                await authProvider.signOut();
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                  (Route<dynamic> route) => false,
-                );
-              },
-            ),
-          ],
-        ),
+      body: _widgetOptions.elementAt(_selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // Always show labels
+        backgroundColor: Colors.white, // Set navbar background to white
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.explore),
+            label: 'Explore',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Wishlists',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark),
+            label: 'Booked',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black, // Black for selected items
+        unselectedItemColor: Colors.black, // Black for unselected items
+        onTap: _onItemTapped,
       ),
-      body: parkingSpotProvider.isLoading
-          ? Center(child: CircularProgressIndicator())
-          : parkingSpotProvider.errorMessage.isNotEmpty
-              ? Center(
-                  child: Text(
-                    parkingSpotProvider.errorMessage,
-                    style: TextStyle(color: Colors.red, fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                )
-              : ParkingSpotsMap(parkingSpots: parkingSpotProvider.parkingSpots),
     );
   }
 }
