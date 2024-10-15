@@ -14,8 +14,7 @@ import 'firebase_options.dart'; // Ensure correct Firebase options
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions
-        .currentPlatform, // Replace with your Firebase options
+    options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(ParklyApp());
 }
@@ -28,21 +27,20 @@ class ParklyApp extends StatelessWidget {
         ChangeNotifierProvider<AuthProvider>(
           create: (_) => AuthProvider(),
         ),
-        ChangeNotifierProvider<BookingProvider>(
-          create: (_) => BookingProvider(),
-        ),
-        ChangeNotifierProvider<ParkingSpotProvider>(
-          create: (_) => ParkingSpotProvider()
-            ..listenToParkingSpots(), // Start listening to real-time updates
-        ),
-        // Add other providers here
+        // other providers...
       ],
       child: MaterialApp(
         title: 'Parkly',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.purple,
         ),
-        home: AuthWrapper(), // Determines whether to show HomePage or LoginPage
+        initialRoute: '/',
+        routes: {
+          '/': (context) => AuthWrapper(),
+          '/login': (context) =>
+              LoginPage(), // Make sure this is the login page
+          // Other routes can be added here
+        },
       ),
     );
   }
