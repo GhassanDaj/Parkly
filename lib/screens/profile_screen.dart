@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parkly/screens/RenterHomePage.dart';
+import 'package:parkly/screens/login_page.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 
@@ -15,8 +16,8 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Profile', style: TextStyle(fontSize: 24)),
-            SizedBox(height: 20),
+            Text('Profile', style: TextStyle(fontSize: 32)),
+            SizedBox(height: 125),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
