@@ -28,16 +28,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pub-
 
-      # Step 3: Set up Flutter with specific Dart version
+      # Step 3: Set up Flutter without specifying a version
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.5.0'  # Specify Flutter version with Dart >= 3.5.0
-          channel: stable
+          channel: stable  # Use the stable channel
+          cache: true  # Caches Flutter for faster builds
 
       # Step 4: Install dependencies using flutter pub
       - name: Install dependencies
-        run: flutter pub get  # Corrected to use flutter pub
+        run: flutter pub get
 
       # Step 5: Run flutter doctor (optional for debugging)
       - name: Flutter doctor
@@ -57,4 +57,3 @@ jobs:
         with:
           name: coverage-report
           path: coverage/lcov.info
-#
