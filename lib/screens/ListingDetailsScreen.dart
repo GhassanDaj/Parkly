@@ -60,6 +60,44 @@ class _ListingDetailsScreenState extends State<ListingDetailsScreen> {
     }
   }
 
+  // Create a booking and add it to Firestore
+  Future<void> _createBooking() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+
+    if (userId != null) {
+      try {
+        // Add the booking to the global 'bookings' collection
+        final bookingData = {
+          'userId': userId,
+          'listingId': widget.listingId,
+          'bookedAt': Timestamp.now(),
+        };
+
+        // Add the booking to the global 'bookings' collection
+        await FirebaseFirestore.instance
+            .collection('bookings')
+            .add(bookingData);
+
+        // Also add the booking to the user's 'bookings' subcollection
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('bookings')
+            .add(bookingData);
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Booking created')));
+      } catch (e) {
+        print("Error creating booking: $e"); // Log any errors
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error creating booking')));
+      }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('User is not authenticated')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (listingData == null) {
@@ -97,6 +135,11 @@ class _ListingDetailsScreenState extends State<ListingDetailsScreen> {
             ElevatedButton(
               onPressed: _addToWishlist,
               child: Text('Add to Wishlist'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _createBooking, // Add a booking to Firestore
+              child: Text('Create Booking'),
             ),
           ],
         ),
