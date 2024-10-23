@@ -28,11 +28,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pub-
 
-      # Step 3: Set up Flutter with a specific version
+      # Step 3: Set up Flutter with specific Dart version
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.3.10'  # Specify an explicit Flutter version
+          flutter-version: '3.5.0'  # Specify Flutter version with Dart >= 3.5.0
+          channel: stable
 
       # Step 4: Install dependencies
       - name: Install dependencies
