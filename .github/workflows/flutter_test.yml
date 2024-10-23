@@ -18,25 +18,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Flutter
+      # Step 2: Cache pub dependencies to speed up builds
+      - name: Cache Flutter pub dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.pub-cache
+            packages/pubspec.lock
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      # Step 3: Set up Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: 'stable'  # You can set to a specific version, or 'stable'
 
-      # Step 3: Install dependencies
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # Step 4: Run tests
+      # Step 5: Verify Flutter installation (optional but useful for debugging)
+      - name: Flutter doctor
+        run: flutter doctor
+
+      # Step 6: Run tests
       - name: Run tests
         run: flutter test
 
-      # Step 5: Generate code coverage report (optional, remove if not needed)
+      # Step 7: Generate code coverage report (optional, remove if not needed)
       - name: Generate coverage
         run: flutter test --coverage
 
-      # Step 6: Upload code coverage report (optional, remove if not needed)
+      # Step 8: Upload code coverage report (optional, remove if not needed)
       - name: Upload coverage report
         uses: actions/upload-artifact@v2
         with:
