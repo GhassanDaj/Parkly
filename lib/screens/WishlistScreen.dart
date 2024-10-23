@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import 'package:parkly/screens/WishlistDetailsScreen.dart'; // For formatting the date
 
 class WishlistScreen extends StatefulWidget {
   const WishlistScreen({super.key});
@@ -22,8 +24,6 @@ class _WishlistScreenState extends State<WishlistScreen> {
         .doc(userId)
         .collection('wishlist')
         .snapshots();
-
-    print('Current User ID: $userId'); // Check if the user ID matches Firestore
   }
 
   @override
@@ -40,33 +40,50 @@ class _WishlistScreenState extends State<WishlistScreen> {
           }
 
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            print('No data found in wishlist.');
             return Center(child: Text('No items in your wishlist.'));
           }
 
-          try {
-            final wishlistDocs = snapshot.data!.docs;
-            print('Number of wishlist documents: ${wishlistDocs.length}');
+          final wishlistDocs = snapshot.data!.docs;
 
-            return ListView.builder(
-              itemCount: wishlistDocs.length,
-              itemBuilder: (context, index) {
-                final doc = wishlistDocs[index];
-                final listingId = doc['listingId'];
-                final addedAt = (doc['addedAt'] as Timestamp).toDate();
+          return ListView.builder(
+            itemCount: wishlistDocs.length,
+            itemBuilder: (context, index) {
+              final doc = wishlistDocs[index];
+              final wishlistId = doc.id; // ID of the wishlist document
+              final listingId = doc['listingId'];
+              final addedAt = (doc['addedAt'] as Timestamp).toDate();
+              final formattedDate =
+                  DateFormat.yMMMd().add_jm().format(addedAt); // Format date
 
-                print('Listing ID: $listingId, Added At: $addedAt');
-
-                return ListTile(
-                  title: Text('Listing ID: $listingId'),
-                  subtitle: Text('Added at: $addedAt'),
-                );
-              },
-            );
-          } catch (e) {
-            print('Error fetching wishlist data: $e');
-            return Center(child: Text('Error loading wishlist.'));
-          }
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: ListTile(
+                    leading: Icon(Icons.favorite,
+                        color: Colors.red, size: 40), // Icon for wishlist
+                    title: Text('Listing ID: $listingId',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text('Added at: $formattedDate'),
+                    trailing: Icon(Icons.chevron_right), // Arrow for more info
+                    onTap: () {
+                      // Navigate to the wishlist details screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              WishlistDetailsScreen(wishlistId: wishlistId),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          );
         },
       ),
     );
