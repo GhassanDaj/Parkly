@@ -1,0 +1,44 @@
+name: Flutter Test Workflow
+
+# Trigger this workflow on push or pull requests to the main branch
+on:
+  push:
+    branches:
+      - main  # Triggers on push to main branch
+  pull_request:
+    branches:
+      - main  # Triggers on pull requests to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'  # You can set to a specific version, or 'stable'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Step 4: Run tests
+      - name: Run tests
+        run: flutter test
+
+      # Step 5: Generate code coverage report (optional, remove if not needed)
+      - name: Generate coverage
+        run: flutter test --coverage
+
+      # Step 6: Upload code coverage report (optional, remove if not needed)
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
