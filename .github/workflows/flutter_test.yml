@@ -18,7 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Cache pub dependencies to speed up builds
+      # Step 2: Cache Flutter pub dependencies
       - name: Cache Flutter pub dependencies
         uses: actions/cache@v2
         with:
@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Step 5: Verify Flutter installation (optional but useful for debugging)
+      # Step 5: Run flutter doctor (optional)
       - name: Flutter doctor
         run: flutter doctor
 
@@ -47,13 +47,13 @@ jobs:
       - name: Run tests
         run: flutter test
 
-      # Step 7: Generate code coverage report (optional, remove if not needed)
+      # Step 7: Generate code coverage report (optional)
       - name: Generate coverage
         run: flutter test --coverage
 
-      # Step 8: Upload code coverage report (optional, remove if not needed)
+      # Step 8: Upload code coverage report (updated to v3)
       - name: Upload coverage report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: coverage/lcov.info
