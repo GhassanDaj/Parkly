@@ -35,9 +35,9 @@ jobs:
           flutter-version: '3.5.0'  # Specify Flutter version with Dart >= 3.5.0
           channel: stable
 
-      # Step 4: Install dependencies
+      # Step 4: Install dependencies using flutter pub
       - name: Install dependencies
-        run: flutter pub get
+        run: flutter pub get  # Corrected to use flutter pub
 
       # Step 5: Run flutter doctor (optional for debugging)
       - name: Flutter doctor
