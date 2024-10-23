@@ -1,20 +1,19 @@
 name: Flutter Test Workflow
 
-# Trigger this workflow on push or pull requests to the main branch
 on:
   push:
     branches:
-      - main  # Triggers on push to main branch
+      - main
   pull_request:
     branches:
-      - main  # Triggers on pull requests to main branch
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code from the repository
+      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -29,17 +28,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pub-
 
-      # Step 3: Set up Flutter
+      # Step 3: Set up Flutter with a specific version
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'  # You can set to a specific version, or 'stable'
+          flutter-version: '3.3.10'  # Specify an explicit Flutter version
 
       # Step 4: Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # Step 5: Run flutter doctor (optional)
+      # Step 5: Run flutter doctor (optional for debugging)
       - name: Flutter doctor
         run: flutter doctor
 
@@ -47,11 +46,11 @@ jobs:
       - name: Run tests
         run: flutter test
 
-      # Step 7: Generate code coverage report (optional)
+      # Step 7: Generate coverage (optional)
       - name: Generate coverage
         run: flutter test --coverage
 
-      # Step 8: Upload code coverage report (updated to v3)
+      # Step 8: Upload coverage report (using v3 for upload artifact)
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
         with:
