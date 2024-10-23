@@ -1,30 +1,34 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:parkly/main.dart';
+// Example widget to test
+class GreetingWidget extends StatelessWidget {
+  final String name;
+
+  GreetingWidget({required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('Hello, $name!', key: Key('greeting_text'));
+  }
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(ParklyApp());
+  // Define a test group
+  group('GreetingWidget Tests', () {
+    testWidgets('renders greeting text with the given name',
+        (WidgetTester tester) async {
+      // Arrange: Create the widget and provide a name
+      const testName = 'John';
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: GreetingWidget(name: testName),
+        ),
+      ));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      // Act: Look for the widget by the Key and verify the output
+      expect(find.byKey(Key('greeting_text')), findsOneWidget);
+      expect(find.text('Hello, John!'), findsOneWidget);
+    });
   });
 }
