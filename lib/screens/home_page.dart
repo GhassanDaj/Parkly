@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:parkly/screens/WishlistScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:parkly/widgets/parking_spots_map.dart';
-import 'package:parkly/screens/profile_screen.dart'; // ProfileScreen includes the Logout button
+import 'package:parkly/screens/profile_screen.dart';
+import 'package:parkly/screens/bookings_screen.dart'; // Import BookingsScreen
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,11 +15,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
+  // Add BookingsScreen to _widgetOptions
   static const List<Widget> _widgetOptions = <Widget>[
-    ParkingSpotsMap(), // Removed the parkingSpots parameter, the data will be fetched internally in ParkingSpotsMap
-    Text('Wishlists', style: TextStyle(fontSize: 24)), // Wishlists
-    Text('Booked', style: TextStyle(fontSize: 24)), // Booked
-    Text('Chat', style: TextStyle(fontSize: 24)), // Chat
+    ParkingSpotsMap(), // Explore
+    WishlistScreen(), // Wishlists screen
+    BookingsScreen(), // Replaced 'Booked' with BookingsScreen
+    Text('Chat', style: TextStyle(fontSize: 24)), // Chat placeholder
     ProfileScreen(), // Profile with Logout button
   ];
 
@@ -49,7 +52,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark),
-            label: 'Booked',
+            label: 'Booked', // This is now connected to BookingsScreen
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
